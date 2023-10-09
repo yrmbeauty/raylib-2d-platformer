@@ -38,51 +38,51 @@ void Character::LoadTextures() {
 }
 
 void Character::Controls() {
-  if (IsKeyDown(KEY_RIGHT)) {
-    body->velocity.x = VELOCITY;
-    direction = 1;
-  } else if (IsKeyDown(KEY_LEFT)) {
-    body->velocity.x = -VELOCITY;
-    direction = -1;
-  } else if (body->isGrounded) {
-    body->velocity.x *= 0.5;
-  }
+  // if (IsKeyDown(KEY_RIGHT)) {
+  //   body->velocity.x = VELOCITY;
+  //   direction = 1;
+  // } else if (IsKeyDown(KEY_LEFT)) {
+  //   body->velocity.x = -VELOCITY;
+  //   direction = -1;
+  // } else if (body->isGrounded) {
+  //   body->velocity.x *= 0.5;
+  // }
 
-  if (IsKeyDown(KEY_UP) && body->isGrounded) {
-    body->velocity.y = -VELOCITY * 4;
-  }
+  // if (IsKeyDown(KEY_UP) && body->isGrounded) {
+  //   body->velocity.y = -VELOCITY * 4;
+  // }
 }
 
 void Character::AnimationUpdate() {
-  auto [idle, run, jump] = characterTextures;
+  // auto [idle, run, jump] = characterTextures;
 
-  if (!body->isGrounded) {
-    currentTexture = jump;
-    frameRec.width = direction * (float)jump.width / 3;
-    frameRec.height = (float)jump.height;
+  // if (!body->isGrounded) {
+  //   currentTexture = jump;
+  //   frameRec.width = direction * (float)jump.width / 3;
+  //   frameRec.height = (float)jump.height;
 
-    if (body->velocity.y < 0) {
-      frameRec.x = (float)jump.width;
-    } else if (body->velocity.y < 0.5) {
-      frameRec.x = (float)jump.width / 3;
-    } else {
-      frameRec.x = 2 * (float)jump.width / 3;
-    }
-  }
+  //   if (body->velocity.y < 0) {
+  //     frameRec.x = (float)jump.width;
+  //   } else if (body->velocity.y < 0.5) {
+  //     frameRec.x = (float)jump.width / 3;
+  //   } else {
+  //     frameRec.x = 2 * (float)jump.width / 3;
+  //   }
+  // }
 
-  if (body->isGrounded) {
-    currentTexture = idle;
-    frameRec.width = direction * (float)idle.width / 10;
-    frameRec.height = (float)idle.height;
-    IdleAnimation();
-  }
+  // if (body->isGrounded) {
+  //   currentTexture = idle;
+  //   frameRec.width = direction * (float)idle.width / 10;
+  //   frameRec.height = (float)idle.height;
+  //   IdleAnimation();
+  // }
 }
 
 void Character::AnimationDraw() {
-  Rectangle dest = {body->position.x - 32, body->position.y - 32, 64, 64};
-  Vector2 origin = {0, 0};
-  float rotation = 0;
-  DrawTexturePro(currentTexture, frameRec, dest, origin, rotation, WHITE);
+  // Rectangle dest = {body->position.x - 32, body->position.y - 32, 64, 64};
+  // Vector2 origin = {0, 0};
+  // float rotation = 0;
+  // DrawTexturePro(currentTexture, frameRec, dest, origin, rotation, WHITE);
 }
 
 void Character::IdleAnimation() {

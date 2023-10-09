@@ -35,10 +35,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/physac.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libs/raymath.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ball/ball.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ball/ball.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/character/character.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/character/character.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
