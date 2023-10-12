@@ -18,7 +18,8 @@ int main() {
 
     BeginDrawing();
     ClearBackground(WHITE);
-
+    DrawText("Hello", 10, 40, 10, GREEN);
+    // DrawCircleV((Vector2){400, 200}, 20, BLACK);
     // character.Draw();
     EndDrawing();
   }

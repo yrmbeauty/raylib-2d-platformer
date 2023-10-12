@@ -5,6 +5,8 @@
     ".env.example": "properties",
     "__node_handle": "cpp",
     "ios": "cpp",
-    "*.m": "cpp"
-  }
+    "*.m": "cpp",
+    "string": "cpp"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

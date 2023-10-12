@@ -1,6 +1,8 @@
-#include "character.h"
+#include "character.hpp"
 
 #include <raylib.h>
+
+#include <constants.hpp>
 
 #define VELOCITY 0.3f
 
@@ -14,8 +16,8 @@ Character::Character() {
 }
 
 void Character::Init() {
-  int screenWidth = GetScreenWidth();
-  int screenHeight = GetScreenHeight();
+  // int screenWidth = GetScreenWidth();
+  // int screenHeight = GetScreenHeight();
 
   LoadTextures();
 }
@@ -30,9 +32,9 @@ void Character::Draw() {
 }
 
 void Character::LoadTextures() {
-  Texture2D idle = LoadTexture("assets/character/Idle.png");
-  Texture2D run = LoadTexture("assets/character/Run.png");
-  Texture2D jump = LoadTexture("assets/character/Jump.png");
+  Texture2D idle = LoadTexture(Constants::GetAssetPath("character/Idle.png").c_str());
+  Texture2D run = LoadTexture(Constants::GetAssetPath("character/Run.png").c_str());
+  Texture2D jump = LoadTexture(Constants::GetAssetPath("character/Jump.png").c_str());
 
   characterTextures = {idle, run, jump};
 }
@@ -54,7 +56,7 @@ void Character::Controls() {
 }
 
 void Character::AnimationUpdate() {
-  // auto [idle, run, jump] = characterTextures;
+  auto [idle, run, jump] = characterTextures;
 
   // if (!body->isGrounded) {
   //   currentTexture = jump;
@@ -71,18 +73,18 @@ void Character::AnimationUpdate() {
   // }
 
   // if (body->isGrounded) {
-  //   currentTexture = idle;
-  //   frameRec.width = direction * (float)idle.width / 10;
-  //   frameRec.height = (float)idle.height;
-  //   IdleAnimation();
+  currentTexture = idle;
+  frameRec.width = direction * (float)idle.width / 10;
+  frameRec.height = (float)idle.height;
+  IdleAnimation();
   // }
 }
 
 void Character::AnimationDraw() {
-  // Rectangle dest = {body->position.x - 32, body->position.y - 32, 64, 64};
-  // Vector2 origin = {0, 0};
-  // float rotation = 0;
-  // DrawTexturePro(currentTexture, frameRec, dest, origin, rotation, WHITE);
+  Rectangle dest = {400 - 32, 200 - 32, 64, 64};
+  Vector2 origin = {0, 0};
+  float rotation = 0;
+  DrawTexturePro(currentTexture, frameRec, dest, origin, rotation, WHITE);
 }
 
 void Character::IdleAnimation() {

@@ -8,7 +8,8 @@
       "type": "lldb",
       "request": "launch",
       "name": "Debug",
-      "program": "${workspaceFolder}/build/my-game",
+      // "program": "${workspaceFolder}/build/my-game",
+      "program": "${command:cmake.launchTargetPath}",
       "args": [],
       "cwd": "${workspaceFolder}"
     }
