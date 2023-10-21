@@ -1,5 +1,4 @@
 {
-  "dotnet.defaultSolution": "build/_deps/raylib-src/projects/VS2022/raylib.sln",
   "files.associations": {
     ".env.local": "properties",
     ".env.example": "properties",
