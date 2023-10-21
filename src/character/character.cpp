@@ -1,23 +1,46 @@
 #include "character.hpp"
 
+#include <box2d/box2d.h>
 #include <raylib.h>
 
 #include <constants.hpp>
 
-#define VELOCITY 0.3f
+#define VELOCITY 60.0f
 
-Character::Character() {
+Character::Character(b2World *world) {
   currentFrame = 0;
   framesCounter = 0;
   framesSpeed = 8;
   direction = 1;
 
+  int screenWidth = GetScreenWidth();
+  int screenHeight = GetScreenHeight();
+
+  bodyX = screenWidth / 2;
+  bodyY = screenHeight / 2;
+  bodyWidth = 3.0f;
+  bodyHeight = 3.0f;
+
+  this->world = world;
+
   Init();
 }
 
 void Character::Init() {
-  // int screenWidth = GetScreenWidth();
-  // int screenHeight = GetScreenHeight();
+  b2BodyDef bodyDef;
+  bodyDef.type = b2_dynamicBody;
+  bodyDef.fixedRotation = true;
+  bodyDef.position.Set(bodyX, bodyY);
+  body = world->CreateBody(&bodyDef);
+
+  b2PolygonShape dynamicBox;
+  dynamicBox.SetAsBox(bodyWidth * 0.5, bodyHeight * 0.7);
+  b2FixtureDef fixtureDef;
+  fixtureDef.shape = &dynamicBox;
+  fixtureDef.density = 1.0f;
+  fixtureDef.friction = 100.0f;
+  body->CreateFixture(&fixtureDef);
+  body->SetGravityScale(2);
 
   LoadTextures();
 }
@@ -27,61 +50,78 @@ void Character::Update() {
   AnimationUpdate();
 }
 
-void Character::Draw() {
-  AnimationDraw();
-}
+void Character::Draw() { AnimationDraw(); }
 
 void Character::LoadTextures() {
-  Texture2D idle = LoadTexture(Constants::GetAssetPath("character/Idle.png").c_str());
-  Texture2D run = LoadTexture(Constants::GetAssetPath("character/Run.png").c_str());
-  Texture2D jump = LoadTexture(Constants::GetAssetPath("character/Jump.png").c_str());
+  Texture2D idle =
+      LoadTexture(Constants::GetAssetPath("character/Idle.png").c_str());
+  Texture2D run =
+      LoadTexture(Constants::GetAssetPath("character/Run.png").c_str());
+  Texture2D jump =
+      LoadTexture(Constants::GetAssetPath("character/Jump.png").c_str());
 
   characterTextures = {idle, run, jump};
 }
 
 void Character::Controls() {
-  // if (IsKeyDown(KEY_RIGHT)) {
-  //   body->velocity.x = VELOCITY;
-  //   direction = 1;
-  // } else if (IsKeyDown(KEY_LEFT)) {
-  //   body->velocity.x = -VELOCITY;
-  //   direction = -1;
-  // } else if (body->isGrounded) {
-  //   body->velocity.x *= 0.5;
-  // }
+  b2Vec2 velocity = body->GetLinearVelocity();
 
-  // if (IsKeyDown(KEY_UP) && body->isGrounded) {
-  //   body->velocity.y = -VELOCITY * 4;
-  // }
+  if (IsKeyDown(KEY_LEFT)) {
+    direction = -1;
+    velocity.x = -VELOCITY;
+  } else if (IsKeyDown(KEY_RIGHT)) {
+    direction = 1;
+    velocity.x = VELOCITY;
+  }
+
+  if (IsKeyPressed(KEY_UP)) {
+    velocity.y = -VELOCITY;
+  }
+
+  body->SetLinearVelocity(velocity);
 }
 
 void Character::AnimationUpdate() {
   auto [idle, run, jump] = characterTextures;
+  b2Vec2 velocity = body->GetLinearVelocity();
+  bool isGrounded = velocity.y == 0;
 
-  // if (!body->isGrounded) {
-  //   currentTexture = jump;
-  //   frameRec.width = direction * (float)jump.width / 3;
-  //   frameRec.height = (float)jump.height;
+  if (!isGrounded) {
+    currentTexture = jump;
+    frameRec.width = direction * (float)jump.width / 3;
+    frameRec.height = (float)jump.height;
 
-  //   if (body->velocity.y < 0) {
-  //     frameRec.x = (float)jump.width;
-  //   } else if (body->velocity.y < 0.5) {
-  //     frameRec.x = (float)jump.width / 3;
-  //   } else {
-  //     frameRec.x = 2 * (float)jump.width / 3;
-  //   }
-  // }
+    if (velocity.y < -30) {
+      frameRec.x = (float)jump.width;
+    } else if (velocity.y < 30) {
+      frameRec.x = (float)jump.width / 3;
+    } else {
+      frameRec.x = 2 * (float)jump.width / 3;
+    }
+  }
 
-  // if (body->isGrounded) {
-  currentTexture = idle;
-  frameRec.width = direction * (float)idle.width / 10;
-  frameRec.height = (float)idle.height;
-  IdleAnimation();
-  // }
+  if (isGrounded && !IsKeyDown(KEY_LEFT) && !IsKeyDown(KEY_RIGHT)) {
+    currentTexture = idle;
+    framesTotal = 10;
+    frameRec.width = direction * (float)idle.width / framesTotal;
+    frameRec.height = (float)idle.height;
+    IdleAnimation();
+  }
+
+  if (isGrounded && (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_RIGHT))) {
+    currentTexture = run;
+    framesTotal = 8;
+    frameRec.width = direction * (float)run.width / framesTotal;
+    frameRec.height = (float)run.height;
+    IdleAnimation();
+  }
 }
 
 void Character::AnimationDraw() {
-  Rectangle dest = {400 - 32, 200 - 32, 64, 64};
+  b2Vec2 position = body->GetPosition();
+
+  Rectangle dest = {position.x - bodyWidth, position.y - bodyHeight,
+                    bodyWidth * 2, bodyHeight * 2};
   Vector2 origin = {0, 0};
   float rotation = 0;
   DrawTexturePro(currentTexture, frameRec, dest, origin, rotation, WHITE);
@@ -94,8 +134,19 @@ void Character::IdleAnimation() {
     framesCounter = 0;
     currentFrame++;
 
-    if (currentFrame > 9) currentFrame = 0;
+    if (currentFrame > framesTotal - 1)
+      currentFrame = 0;
 
-    frameRec.x = (float)currentFrame * (float)characterTextures.idle.width / 10;
+    frameRec.x = (float)currentFrame * currentTexture.width / framesTotal;
   }
+}
+
+Vector2 Character::getPosition() {
+  b2Vec2 position = body->GetPosition();
+  return (Vector2){position.x, position.y};
+}
+
+Vector2 Character::getVelocity() {
+  b2Vec2 velocity = body->GetLinearVelocity();
+  return (Vector2){velocity.x, velocity.y};
 }
